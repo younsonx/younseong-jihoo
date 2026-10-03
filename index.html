@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>❤️</title>
+    <meta name="theme-color" content="#f7f7f5">
+
+    <title>곽윤성 ♥ 이지후</title>
 
     <style>
         * {
@@ -12,259 +14,775 @@
 
         body {
             margin: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
 
-            background: #08080d;
-            color: white;
+            background: #f7f7f5;
+            color: #111;
 
-            font-family: -apple-system, BlinkMacSystemFont,
-                         "Apple SD Gothic Neo", sans-serif;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Apple SD Gothic Neo",
+                sans-serif;
 
             display: flex;
             justify-content: center;
             align-items: center;
+
+            overflow: hidden;
         }
 
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+        .container {
+            width: 100%;
+            max-width: 650px;
 
-        /* 시작 화면 */
-        #start {
+            padding: 40px 24px;
+
             text-align: center;
-            z-index: 10;
         }
 
-        #start h1 {
-            font-size: 28px;
-            font-weight: 500;
-            margin-bottom: 30px;
-        }
+        /* 페이지 */
 
-        #startButton {
-            border: none;
-            padding: 14px 32px;
-            border-radius: 30px;
-
-            background: #ff416c;
-            color: white;
-
-            font-size: 18px;
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        #startButton:hover {
-            transform: scale(1.08);
-        }
-
-        /* 거북이 */
-        #turtle {
-            position: absolute;
-
-            font-size: 40px;
-
-            transform: translate(-50%, -50%);
-
+        .page {
             display: none;
 
-            z-index: 5;
+            animation: fadeIn 0.55s ease;
         }
 
-        /* 마지막 이름 */
-        #message {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            transform: translate(-50%, -50%);
-
-            text-align: center;
-
-            opacity: 0;
-
-            transition: opacity 1.8s ease;
-
-            z-index: 4;
+        .page.active {
+            display: block;
         }
 
-        #message h1 {
-            margin: 0;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
 
-            font-size: 46px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        /* 텍스트 */
+
+        .small {
+            margin-bottom: 16px;
+
+            color: #999;
+
+            font-size: 12px;
             font-weight: 600;
 
             letter-spacing: 2px;
         }
+
+        h1 {
+            margin: 0 0 18px;
+
+            font-size: 44px;
+            font-weight: 650;
+
+            letter-spacing: -2px;
+        }
+
+        h2 {
+            margin: 0 0 35px;
+
+            font-size: 28px;
+            font-weight: 600;
+
+            letter-spacing: -1px;
+        }
+
+        p {
+            margin: 0;
+
+            color: #777;
+
+            font-size: 17px;
+
+            line-height: 1.7;
+        }
+
+
+        /* 버튼 */
+
+        .buttons {
+            margin-top: 35px;
+        }
+
+        button {
+            border: none;
+
+            margin: 6px;
+            padding: 14px 27px;
+
+            border-radius: 100px;
+
+            background: #111;
+            color: white;
+
+            font-size: 16px;
+            font-weight: 500;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+
+            opacity: 0.8;
+        }
+
+
+        /* 호감도 */
+
+        .percentage {
+            margin: 25px 0;
+
+            font-size: 64px;
+            font-weight: 700;
+
+            letter-spacing: -4px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            max-width: 400px;
+
+            accent-color: #111;
+
+            cursor: pointer;
+        }
+
+        .hint {
+            margin-top: 14px;
+
+            color: #aaa;
+
+            font-size: 13px;
+        }
+
+
+        /* 분석 */
+
+        .loading-title {
+            margin-bottom: 30px;
+
+            font-size: 25px;
+            font-weight: 600;
+        }
+
+        .loading-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 5px;
+
+            margin: 0 auto;
+
+            border-radius: 20px;
+
+            background: #ddd;
+
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+
+            background: #111;
+
+            transition: width 0.12s linear;
+        }
+
+        .loading-number {
+            margin-top: 16px;
+
+            color: #999;
+
+            font-size: 14px;
+        }
+
+
+        /* 최종 결과 */
+
+        .couple {
+            margin-bottom: 55px;
+
+            font-size: 38px;
+            font-weight: 650;
+
+            letter-spacing: -1.5px;
+        }
+
+        .heart {
+            margin: 0 8px;
+
+            color: #e85d75;
+        }
+
+        .info {
+            margin: 34px 0;
+        }
+
+        .label {
+            margin-bottom: 9px;
+
+            color: #aaa;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            letter-spacing: 2.5px;
+        }
+
+        .value {
+            font-size: 29px;
+            font-weight: 600;
+
+            letter-spacing: -1px;
+        }
+
+        #days {
+            font-size: 55px;
+            font-weight: 700;
+
+            letter-spacing: -3px;
+        }
+
+        .footer {
+            margin-top: 65px;
+
+            color: #bbb;
+
+            font-size: 12px;
+
+            line-height: 1.7;
+        }
+
+
+        /* 마지막 작은 하트 */
+
+        .tiny-heart {
+            position: absolute;
+
+            pointer-events: none;
+
+            color: #e85d75;
+
+            animation: heartUp 2.5s ease forwards;
+        }
+
+        @keyframes heartUp {
+
+            0% {
+                opacity: 0;
+
+                transform:
+                    translateY(10px)
+                    scale(0.6);
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(-120px)
+                    scale(1.2);
+            }
+        }
+
+
+        /* 아이폰 등 작은 화면 */
+
+        @media (max-width: 500px) {
+
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .percentage {
+                font-size: 55px;
+            }
+
+            .couple {
+                font-size: 29px;
+            }
+
+            #days {
+                font-size: 47px;
+            }
+        }
     </style>
 </head>
 
+
 <body>
 
-    <canvas id="canvas"></canvas>
-
-    <div id="turtle">🐢</div>
-
-    <div id="start">
-        <h1>지후에게 보여줄 게 있어.</h1>
-
-        <button id="startButton">
-            눌러봐
-        </button>
-    </div>
-
-    <div id="message">
-        <h1>이지후 ❤️</h1>
-    </div>
+<div class="container">
 
 
-    <script>
+    <!-- 첫 화면 -->
 
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
+    <section class="page active" id="page1">
 
-        const turtle = document.getElementById("turtle");
+        <div class="small">
+            FOR JIHOO
+        </div>
 
-        const start = document.getElementById("start");
-        const startButton = document.getElementById("startButton");
+        <h1>
+            Hi, Jihoo.
+        </h1>
 
-        const message = document.getElementById("message");
+        <p>
+            윤성이 만든 우리의 웹사이트입니다.
+        </p>
+
+        <div class="buttons">
+
+            <button onclick="nextPage(2)">
+                시작하기
+            </button>
+
+        </div>
+
+    </section>
 
 
-        // 화면 크기에 맞게 Canvas 설정
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+
+    <!-- 질문 1 -->
+
+    <section class="page" id="page2">
+
+        <div class="small">
+            QUESTION 01
+        </div>
+
+        <h2>
+            오늘 윤성이 좀 괜찮아 보이나요?
+        </h2>
+
+        <div class="buttons">
+
+            <button onclick="nextPage(3)">
+                네
+            </button>
+
+            <button onclick="nextPage(3)">
+                매우 네
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- 질문 2 -->
+
+    <section class="page" id="page3">
+
+        <div class="small">
+            QUESTION 02
+        </div>
+
+        <h2>
+            윤성이 얼마나 좋나요?
+        </h2>
+
+        <div
+            class="percentage"
+            id="percentage"
+        >
+            90%
+        </div>
+
+
+        <input
+            type="range"
+            id="loveRange"
+
+            min="80"
+            max="100"
+            value="90"
+        >
+
+
+        <div class="hint">
+            최소값은 80%입니다.
+        </div>
+
+
+        <div class="buttons">
+
+            <button onclick="startAnalysis()">
+                제출
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- 분석 -->
+
+    <section class="page" id="page4">
+
+        <div class="loading-title">
+            분석 중...
+        </div>
+
+
+        <div class="loading-bar">
+
+            <div
+                class="loading-progress"
+                id="loadingProgress"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="loading-number"
+            id="loadingNumber"
+        >
+            0%
+        </div>
+
+    </section>
+
+
+
+    <!-- 결과 -->
+
+    <section class="page" id="page5">
+
+        <div class="couple">
+
+            곽윤성
+
+            <span class="heart">
+                ♥
+            </span>
+
+            이지후
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="label">
+                TOGETHER
+            </div>
+
+            <div
+                class="value"
+                id="days"
+            >
+                -
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="label">
+                STATUS
+            </div>
+
+            <div class="value">
+                연애 중 ♥
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="label">
+                SINCE
+            </div>
+
+            <div class="value">
+                2026.09.23
+            </div>
+
+        </div>
+
+
+        <div class="footer">
+
+            Designed by Younseong<br>
+            for Jihoo.
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<script>
+
+    /* 페이지 전환 */
+
+    function nextPage(number) {
+
+        document
+            .querySelectorAll(".page")
+            .forEach(page => {
+
+                page.classList.remove("active");
+
+            });
+
+
+        document
+            .getElementById(
+                "page" + number
+            )
+            .classList.add("active");
+    }
+
+
+
+    /* 호감도 슬라이더 */
+
+    const loveRange =
+        document.getElementById("loveRange");
+
+
+    const percentage =
+        document.getElementById("percentage");
+
+
+    loveRange.addEventListener(
+        "input",
+        () => {
+
+            percentage.textContent =
+                loveRange.value + "%";
+
         }
-
-        resizeCanvas();
-
-        window.addEventListener("resize", resizeCanvas);
+    );
 
 
-        // 하트 좌표 계산
-        function heartPoint(t) {
 
-            const x =
-                16 * Math.pow(Math.sin(t), 3);
+    /* 분석 */
 
-            const y =
-                13 * Math.cos(t)
-                - 5 * Math.cos(2 * t)
-                - 2 * Math.cos(3 * t)
-                - Math.cos(4 * t);
+    function startAnalysis() {
+
+        nextPage(4);
 
 
-            const scale =
-                Math.min(
-                    window.innerWidth,
-                    window.innerHeight
-                ) / 42;
-
-
-            return {
-                x: window.innerWidth / 2 + x * scale,
-                y: window.innerHeight / 2 - y * scale
-            };
-        }
-
-
-        // 거북이가 하트 그리기
-        function drawHeart() {
-
-            turtle.style.display = "block";
-
-            ctx.beginPath();
-
-            ctx.strokeStyle = "#ff416c";
-
-            ctx.lineWidth = 6;
-
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-
-            ctx.shadowColor = "#ff416c";
-            ctx.shadowBlur = 15;
-
-
-            let t = 0;
-
-            const maxT = Math.PI * 2;
-
-            // 숫자가 작을수록 천천히 그림
-            const speed = 0.018;
-
-
-            const firstPoint = heartPoint(0);
-
-            ctx.moveTo(
-                firstPoint.x,
-                firstPoint.y
+        const progress =
+            document.getElementById(
+                "loadingProgress"
             );
 
 
-            function animate() {
-
-                t += speed;
-
-                const point = heartPoint(t);
-
-
-                ctx.lineTo(
-                    point.x,
-                    point.y
-                );
-
-                ctx.stroke();
+        const number =
+            document.getElementById(
+                "loadingNumber"
+            );
 
 
-                // 거북이 이동
-                turtle.style.left =
-                    point.x + "px";
-
-                turtle.style.top =
-                    point.y + "px";
+        let value = 0;
 
 
-                if (t < maxT) {
+        const interval =
+            setInterval(() => {
 
-                    requestAnimationFrame(animate);
+                value +=
+                    Math.floor(
+                        Math.random() * 5
+                    ) + 1;
 
-                } else {
 
-                    turtle.style.display = "none";
+                if (value >= 100) {
 
-                    setTimeout(() => {
+                    value = 100;
 
-                        message.style.opacity = "1";
+                    clearInterval(interval);
 
-                    }, 500);
+
+                    setTimeout(
+                        showResult,
+                        600
+                    );
                 }
-            }
 
 
-            animate();
-        }
+                progress.style.width =
+                    value + "%";
 
 
-        // 시작
-        startButton.addEventListener(
-            "click",
-            () => {
+                number.textContent =
+                    value + "%";
 
-                start.style.display = "none";
+            }, 90);
+    }
 
-                drawHeart();
-            }
+
+
+    /* 연애 일수 자동 계산
+       2026.09.23 = 1일째
+    */
+
+    function calculateDays() {
+
+        const startDate =
+            new Date(
+                2026,
+                8,
+                23
+            );
+
+
+        const today =
+            new Date();
+
+
+        startDate.setHours(
+            0,
+            0,
+            0,
+            0
         );
 
-    </script>
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const difference =
+            today - startDate;
+
+
+        return (
+            Math.floor(
+                difference /
+                (1000 * 60 * 60 * 24)
+            ) + 1
+        );
+    }
+
+
+
+    /* 결과 */
+
+    function showResult() {
+
+        const days =
+            calculateDays();
+
+
+        document
+            .getElementById("days")
+            .textContent =
+                days + " DAYS";
+
+
+        nextPage(5);
+
+
+        createHearts();
+    }
+
+
+
+    /* 하트 효과 */
+
+    function createHearts() {
+
+        for (
+            let i = 0;
+            i < 12;
+            i++
+        ) {
+
+            setTimeout(() => {
+
+                const heart =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                heart.className =
+                    "tiny-heart";
+
+
+                heart.textContent =
+                    "♥";
+
+
+                heart.style.left =
+                    Math.random() *
+                    100 + "vw";
+
+
+                heart.style.top =
+                    (
+                        60 +
+                        Math.random() * 30
+                    ) + "vh";
+
+
+                heart.style.fontSize =
+                    (
+                        12 +
+                        Math.random() * 15
+                    ) + "px";
+
+
+                document
+                    .body
+                    .appendChild(
+                        heart
+                    );
+
+
+                setTimeout(
+                    () => heart.remove(),
+                    2500
+                );
+
+
+            }, i * 120);
+        }
+    }
+
+</script>
 
 </body>
 </html>
