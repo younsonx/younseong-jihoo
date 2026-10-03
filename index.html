@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+
+            background: #08080d;
+            color: white;
+
+            font-family: -apple-system, BlinkMacSystemFont,
+                         "Apple SD Gothic Neo", sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* 시작 화면 */
+        #start {
+            text-align: center;
+            z-index: 10;
+        }
+
+        #start h1 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+
+        #startButton {
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+
+            background: #ff416c;
+            color: white;
+
+            font-size: 18px;
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        #startButton:hover {
+            transform: scale(1.08);
+        }
+
+        /* 거북이 */
+        #turtle {
+            position: absolute;
+
+            font-size: 40px;
+
+            transform: translate(-50%, -50%);
+
+            display: none;
+
+            z-index: 5;
+        }
+
+        /* 마지막 이름 */
+        #message {
+            position: absolute;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            text-align: center;
+
+            opacity: 0;
+
+            transition: opacity 1.8s ease;
+
+            z-index: 4;
+        }
+
+        #message h1 {
+            margin: 0;
+
+            font-size: 46px;
+            font-weight: 600;
+
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="turtle">🐢</div>
+
+    <div id="start">
+        <h1>지후에게 보여줄 게 있어.</h1>
+
+        <button id="startButton">
+            눌러봐
+        </button>
+    </div>
+
+    <div id="message">
+        <h1>이지후 ❤️</h1>
+    </div>
+
+
+    <script>
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const turtle = document.getElementById("turtle");
+
+        const start = document.getElementById("start");
+        const startButton = document.getElementById("startButton");
+
+        const message = document.getElementById("message");
+
+
+        // 화면 크기에 맞게 Canvas 설정
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+
+        window.addEventListener("resize", resizeCanvas);
+
+
+        // 하트 좌표 계산
+        function heartPoint(t) {
+
+            const x =
+                16 * Math.pow(Math.sin(t), 3);
+
+            const y =
+                13 * Math.cos(t)
+                - 5 * Math.cos(2 * t)
+                - 2 * Math.cos(3 * t)
+                - Math.cos(4 * t);
+
+
+            const scale =
+                Math.min(
+                    window.innerWidth,
+                    window.innerHeight
+                ) / 42;
+
+
+            return {
+                x: window.innerWidth / 2 + x * scale,
+                y: window.innerHeight / 2 - y * scale
+            };
+        }
+
+
+        // 거북이가 하트 그리기
+        function drawHeart() {
+
+            turtle.style.display = "block";
+
+            ctx.beginPath();
+
+            ctx.strokeStyle = "#ff416c";
+
+            ctx.lineWidth = 6;
+
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+
+            ctx.shadowColor = "#ff416c";
+            ctx.shadowBlur = 15;
+
+
+            let t = 0;
+
+            const maxT = Math.PI * 2;
+
+            // 숫자가 작을수록 천천히 그림
+            const speed = 0.018;
+
+
+            const firstPoint = heartPoint(0);
+
+            ctx.moveTo(
+                firstPoint.x,
+                firstPoint.y
+            );
+
+
+            function animate() {
+
+                t += speed;
+
+                const point = heartPoint(t);
+
+
+                ctx.lineTo(
+                    point.x,
+                    point.y
+                );
+
+                ctx.stroke();
+
+
+                // 거북이 이동
+                turtle.style.left =
+                    point.x + "px";
+
+                turtle.style.top =
+                    point.y + "px";
+
+
+                if (t < maxT) {
+
+                    requestAnimationFrame(animate);
+
+                } else {
+
+                    turtle.style.display = "none";
+
+                    setTimeout(() => {
+
+                        message.style.opacity = "1";
+
+                    }, 500);
+                }
+            }
+
+
+            animate();
+        }
+
+
+        // 시작
+        startButton.addEventListener(
+            "click",
+            () => {
+
+                start.style.display = "none";
+
+                drawHeart();
+            }
+        );
+
+    </script>
+
+</body>
+</html>
