@@ -1,788 +1,831 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f7f7f5">
-
-    <title>곽윤성 ♥ 이지후</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-
-            background: #f7f7f5;
-            color: #111;
-
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Apple SD Gothic Neo",
-                sans-serif;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            overflow: hidden;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 650px;
-
-            padding: 40px 24px;
-
-            text-align: center;
-        }
-
-        /* 페이지 */
-
-        .page {
-            display: none;
-
-            animation: fadeIn 0.55s ease;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-
-        /* 텍스트 */
-
-        .small {
-            margin-bottom: 16px;
-
-            color: #999;
-
-            font-size: 12px;
-            font-weight: 600;
-
-            letter-spacing: 2px;
-        }
-
-        h1 {
-            margin: 0 0 18px;
-
-            font-size: 44px;
-            font-weight: 650;
-
-            letter-spacing: -2px;
-        }
-
-        h2 {
-            margin: 0 0 35px;
-
-            font-size: 28px;
-            font-weight: 600;
-
-            letter-spacing: -1px;
-        }
-
-        p {
-            margin: 0;
-
-            color: #777;
-
-            font-size: 17px;
-
-            line-height: 1.7;
-        }
-
-
-        /* 버튼 */
-
-        .buttons {
-            margin-top: 35px;
-        }
-
-        button {
-            border: none;
-
-            margin: 6px;
-            padding: 14px 27px;
-
-            border-radius: 100px;
-
-            background: #111;
-            color: white;
-
-            font-size: 16px;
-            font-weight: 500;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.2s ease,
-                opacity 0.2s ease;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-
-            opacity: 0.8;
-        }
-
-
-        /* 호감도 */
-
-        .percentage {
-            margin: 25px 0;
-
-            font-size: 64px;
-            font-weight: 700;
-
-            letter-spacing: -4px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            max-width: 400px;
-
-            accent-color: #111;
-
-            cursor: pointer;
-        }
-
-        .hint {
-            margin-top: 14px;
-
-            color: #aaa;
-
-            font-size: 13px;
-        }
-
-
-        /* 분석 */
-
-        .loading-title {
-            margin-bottom: 30px;
-
-            font-size: 25px;
-            font-weight: 600;
-        }
-
-        .loading-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 5px;
-
-            margin: 0 auto;
-
-            border-radius: 20px;
-
-            background: #ddd;
-
-            overflow: hidden;
-        }
-
-        .loading-progress {
-            width: 0%;
-            height: 100%;
-
-            background: #111;
-
-            transition: width 0.12s linear;
-        }
-
-        .loading-number {
-            margin-top: 16px;
-
-            color: #999;
-
-            font-size: 14px;
-        }
-
-
-        /* 최종 결과 */
-
-        .couple {
-            margin-bottom: 55px;
-
-            font-size: 38px;
-            font-weight: 650;
-
-            letter-spacing: -1.5px;
-        }
-
-        .heart {
-            margin: 0 8px;
-
-            color: #e85d75;
-        }
-
-        .info {
-            margin: 34px 0;
-        }
-
-        .label {
-            margin-bottom: 9px;
-
-            color: #aaa;
-
-            font-size: 11px;
-            font-weight: 600;
-
-            letter-spacing: 2.5px;
-        }
-
-        .value {
-            font-size: 29px;
-            font-weight: 600;
-
-            letter-spacing: -1px;
-        }
-
-        #days {
-            font-size: 55px;
-            font-weight: 700;
-
-            letter-spacing: -3px;
-        }
-
-        .footer {
-            margin-top: 65px;
-
-            color: #bbb;
-
-            font-size: 12px;
-
-            line-height: 1.7;
-        }
-
-
-        /* 마지막 작은 하트 */
-
-        .tiny-heart {
-            position: absolute;
-
-            pointer-events: none;
-
-            color: #e85d75;
-
-            animation: heartUp 2.5s ease forwards;
-        }
-
-        @keyframes heartUp {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translateY(10px)
-                    scale(0.6);
-            }
-
-            20% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translateY(-120px)
-                    scale(1.2);
-            }
-        }
-
-
-        /* 아이폰 등 작은 화면 */
-
-        @media (max-width: 500px) {
-
-            .container {
-                padding: 30px 20px;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            .percentage {
-                font-size: 55px;
-            }
-
-            .couple {
-                font-size: 29px;
-            }
-
-            #days {
-                font-size: 47px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="description" content="곽윤성과 이지후의 작은 공간">
+  <title>곽윤성 ♥ 이지후</title>
+
+  <style>
+    :root {
+      --background: #f5f5f7;
+      --surface: rgba(255, 255, 255, .78);
+      --surface-solid: #fff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: rgba(0, 0, 0, .07);
+      --accent: #ff375f;
+      --accent-soft: #fff0f3;
+      --blue: #0071e3;
+      --shadow: 0 18px 45px rgba(0, 0, 0, .07);
+      --radius: 30px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 85% 3%, rgba(255, 55, 95, .10), transparent 28rem),
+        radial-gradient(circle at 5% 42%, rgba(0, 113, 227, .07), transparent 28rem),
+        var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .shell {
+      width: min(100% - 32px, 980px);
+      margin: 0 auto;
+      padding: max(22px, env(safe-area-inset-top)) 0 max(54px, env(safe-area-inset-bottom));
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 42px;
+      margin-bottom: 38px;
+    }
+
+    .brand {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+    }
+
+    .heart { color: var(--accent); }
+
+    .account-button, .ghost-button, .primary-button, .edit-button, .save-button {
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease;
+    }
+
+    button:active { transform: scale(.97); }
+    button:disabled { cursor: default; opacity: .48; }
+
+    .account-button, .ghost-button {
+      padding: 10px 15px;
+      background: rgba(255, 255, 255, .72);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--line);
+      font-size: 13px;
+      font-weight: 650;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .hero {
+      padding: 46px 8px 54px;
+      text-align: center;
+    }
+
+    .eyebrow, .section-label {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 2.2px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(40px, 8vw, 72px);
+      font-weight: 750;
+      letter-spacing: -4px;
+      line-height: 1.04;
+    }
+
+    .hero-copy {
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, .85);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .together-card {
+      min-height: 285px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(145deg, #1d1d1f, #343438);
+      color: #fff;
+    }
+
+    .together-card .section-label { color: rgba(255, 255, 255, .58); }
+
+    .days {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .days strong {
+      font-size: clamp(64px, 12vw, 92px);
+      line-height: .9;
+      letter-spacing: -6px;
+    }
+
+    .days span { color: rgba(255, 255, 255, .7); font-size: 15px; }
+
+    .since { color: rgba(255, 255, 255, .62); font-size: 13px; }
+
+    .photo-card {
+      min-height: 285px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .75)),
+        linear-gradient(135deg, #ffd4dd, #e1e9ff);
+    }
+
+    .photo-icon {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .62);
+      font-size: 25px;
+      box-shadow: 0 12px 28px rgba(75, 61, 95, .10);
+    }
+
+    .photo-title { margin: 0; font-size: 22px; letter-spacing: -.7px; }
+    .photo-copy { margin: 8px 0 0; color: rgba(29, 29, 31, .58); font-size: 13px; }
+
+    .anniversary-card {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 22px;
+    }
+
+    .anniversary-name {
+      margin: 0;
+      font-size: clamp(29px, 5vw, 44px);
+      letter-spacing: -2px;
+      line-height: 1.05;
+    }
+
+    .anniversary-date { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+
+    .d-day {
+      min-width: 92px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      text-align: center;
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .section { margin-top: 70px; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin: 0 4px 20px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 48px);
+      letter-spacing: -2.5px;
+      line-height: 1;
+    }
+
+    .section-note { margin: 0; color: var(--muted); font-size: 13px; text-align: right; }
+
+    .messages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+
+    .message-card { min-height: 235px; display: flex; flex-direction: column; }
+
+    .message-from {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .person { font-size: 13px; font-weight: 720; }
+    .direction { color: var(--muted); font-size: 12px; }
+
+    .message-text {
+      flex: 1;
+      margin: 0;
+      font-size: 22px;
+      font-weight: 620;
+      letter-spacing: -.8px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .message-text.loading { color: #c7c7cc; }
+
+    .edit-button {
+      align-self: flex-start;
+      margin-top: 22px;
+      padding: 9px 13px;
+      background: #f2f2f7;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .edit-area { display: none; flex: 1; flex-direction: column; gap: 12px; }
+    .message-card.editing .message-text, .message-card.editing .edit-button { display: none; }
+    .message-card.editing .edit-area { display: flex; }
+
+    .message-input {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      border: 1px solid rgba(0, 113, 227, .28);
+      border-radius: 17px;
+      outline: none;
+      padding: 14px;
+      background: rgba(255, 255, 255, .72);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      box-shadow: 0 0 0 4px rgba(0, 113, 227, .07);
+    }
+
+    .edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .save-button, .primary-button { padding: 11px 18px; background: var(--text); color: #fff; font-weight: 680; }
+    .edit-actions .ghost-button { background: #f2f2f7; }
+
+    .login-hint {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 4px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .timeline { position: relative; display: grid; gap: 14px; }
+    .memory { display: grid; grid-template-columns: 105px 1fr; align-items: center; gap: 22px; }
+    .memory-date { color: var(--accent); font-size: 13px; font-weight: 750; }
+    .memory h3 { margin: 0 0 6px; font-size: 20px; letter-spacing: -.6px; }
+    .memory p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+    .footer {
+      padding: 72px 0 18px;
+      color: #a1a1a6;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, .34);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(100%, 430px);
+      padding: 28px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .22);
+      animation: modalIn .24s ease-out;
+    }
+
+    @keyframes modalIn { from { opacity: 0; transform: translateY(18px) scale(.98); } }
+
+    .modal-header { display: flex; align-items: start; justify-content: space-between; gap: 15px; }
+    .modal h2 { margin: 0; font-size: 28px; letter-spacing: -1.5px; }
+    .modal-copy { margin: 7px 0 24px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .close-button { border: 0; border-radius: 50%; width: 32px; height: 32px; background: #e8e8ed; color: #666; cursor: pointer; }
+
+    .field { display: block; margin-top: 13px; }
+    .field span { display: block; margin: 0 0 7px 3px; color: var(--muted); font-size: 12px; font-weight: 650; }
+    .field input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      outline: none;
+      padding: 0 15px;
+      background: #f5f5f7;
+      font-size: 16px;
+    }
+    .field input:focus { border-color: rgba(0, 113, 227, .4); box-shadow: 0 0 0 4px rgba(0, 113, 227, .08); }
+    .login-submit { width: 100%; margin-top: 18px; min-height: 50px; }
+    .form-status { min-height: 20px; margin: 12px 2px 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .form-status.error { color: #d70015; }
+    .signed-in { display: none; text-align: center; }
+    .signed-in .avatar { width: 64px; height: 64px; display: grid; place-items: center; margin: 6px auto 14px; border-radius: 22px; background: var(--accent-soft); font-size: 28px; }
+    .signed-in h3 { margin: 0; font-size: 22px; }
+    .signed-in p { margin: 7px 0 22px; color: var(--muted); font-size: 13px; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: max(24px, env(safe-area-inset-bottom));
+      z-index: 30;
+      max-width: calc(100% - 40px);
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(29, 29, 31, .92);
+      color: white;
+      font-size: 13px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, .2);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (min-width: 600px) { .modal-backdrop { align-items: center; } }
+
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 24px, 980px); }
+      .topbar { margin-bottom: 18px; }
+      .hero { padding: 36px 2px 46px; }
+      h1 { letter-spacing: -2.7px; }
+      .grid, .messages { grid-template-columns: 1fr; }
+      .anniversary-card { grid-column: auto; }
+      .card { padding: 24px; border-radius: 25px; }
+      .together-card, .photo-card { min-height: 250px; }
+      .section { margin-top: 58px; }
+      .section-heading { align-items: start; flex-direction: column; gap: 9px; }
+      .section-note { text-align: left; }
+      .messages { gap: 14px; }
+      .message-card { min-height: 215px; }
+      .login-hint { grid-column: auto; }
+      .memory { grid-template-columns: 84px 1fr; gap: 14px; }
+      .modal-backdrop { padding: 10px; }
+      .modal { padding: 25px 22px calc(25px + env(safe-area-inset-bottom)); border-radius: 28px 28px 22px 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 
-
 <body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">YS <span class="heart">♥</span> JH</div>
+      <button class="account-button" id="accountButton" type="button">로그인</button>
+    </header>
 
-<div class="container">
-
-
-    <!-- 첫 화면 -->
-
-    <section class="page active" id="page1">
-
-        <div class="small">
-            FOR JIHOO
-        </div>
-
-        <h1>
-            Hi, Jihoo.
-        </h1>
-
-        <p>
-            윤성이 만든 우리의 웹사이트입니다.
-        </p>
-
-        <div class="buttons">
-
-            <button onclick="nextPage(2)">
-                시작하기
-            </button>
-
-        </div>
-
+    <section class="hero" aria-labelledby="couple-title">
+      <p class="eyebrow">OUR LITTLE PLACE</p>
+      <h1 id="couple-title">곽윤성 <span class="heart">♥</span> 이지후</h1>
+      <p class="hero-copy">우리의 평범한 날들을 오래 기억하기 위한 작은 공간</p>
     </section>
 
+    <section class="grid" aria-label="커플 정보">
+      <article class="card together-card">
+        <p class="section-label">TOGETHER</p>
+        <div class="days"><strong id="togetherDays">-</strong><span>DAYS</span></div>
+        <div class="since">SINCE 2026.09.23</div>
+      </article>
 
-
-    <!-- 질문 1 -->
-
-    <section class="page" id="page2">
-
-        <div class="small">
-            QUESTION 01
+      <article class="card photo-card">
+        <div>
+          <div class="photo-icon" aria-hidden="true">♡</div>
+          <h2 class="photo-title">OUR PHOTO</h2>
+          <p class="photo-copy">가장 좋아하는 사진을 위한 자리</p>
         </div>
+      </article>
 
-        <h2>
-            오늘 윤성이 좀 괜찮아 보이나요?
-        </h2>
-
-        <div class="buttons">
-
-            <button onclick="nextPage(3)">
-                네
-            </button>
-
-            <button onclick="nextPage(3)">
-                매우 네
-            </button>
-
+      <article class="card anniversary-card">
+        <div>
+          <p class="section-label">NEXT ANNIVERSARY</p>
+          <h2 class="anniversary-name" id="anniversaryName">계산 중...</h2>
+          <p class="anniversary-date" id="anniversaryDate">-</p>
         </div>
-
+        <div class="d-day" id="anniversaryDday">D-</div>
+      </article>
     </section>
 
-
-
-    <!-- 질문 2 -->
-
-    <section class="page" id="page3">
-
-        <div class="small">
-            QUESTION 02
+    <section class="section" aria-labelledby="today-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">A WORD FOR TODAY</p>
+          <h2 id="today-title">TODAY</h2>
         </div>
+        <p class="section-note" id="sessionNote">로그인하면 내 한마디를 바꿀 수 있어요.</p>
+      </div>
 
-        <h2>
-            윤성이 얼마나 좋나요?
-        </h2>
+      <div class="messages">
+        <article class="card message-card" id="card-younseong" data-person="younseong">
+          <div class="message-from"><span class="person">윤성</span><span class="direction">윤성 → 지후</span></div>
+          <p class="message-text loading" id="message-younseong">메시지를 불러오는 중...</p>
+          <button class="edit-button" type="button" data-edit="younseong" hidden>내 한마디 수정</button>
+          <div class="edit-area">
+            <textarea class="message-input" id="input-younseong" maxlength="300" aria-label="윤성의 오늘 한마디"></textarea>
+            <div class="edit-actions">
+              <button class="ghost-button" type="button" data-cancel="younseong">취소</button>
+              <button class="save-button" type="button" data-save="younseong">저장</button>
+            </div>
+          </div>
+        </article>
 
-        <div
-            class="percentage"
-            id="percentage"
-        >
-            90%
-        </div>
+        <article class="card message-card" id="card-jihoo" data-person="jihoo">
+          <div class="message-from"><span class="person">지후</span><span class="direction">지후 → 윤성</span></div>
+          <p class="message-text loading" id="message-jihoo">메시지를 불러오는 중...</p>
+          <button class="edit-button" type="button" data-edit="jihoo" hidden>내 한마디 수정</button>
+          <div class="edit-area">
+            <textarea class="message-input" id="input-jihoo" maxlength="300" aria-label="지후의 오늘 한마디"></textarea>
+            <div class="edit-actions">
+              <button class="ghost-button" type="button" data-cancel="jihoo">취소</button>
+              <button class="save-button" type="button" data-save="jihoo">저장</button>
+            </div>
+          </div>
+        </article>
 
-
-        <input
-            type="range"
-            id="loveRange"
-
-            min="80"
-            max="100"
-            value="90"
-        >
-
-
-        <div class="hint">
-            최소값은 80%입니다.
-        </div>
-
-
-        <div class="buttons">
-
-            <button onclick="startAnalysis()">
-                제출
-            </button>
-
-        </div>
-
+        <p class="login-hint" id="messageStatus" aria-live="polite"></p>
+      </div>
     </section>
 
-
-
-    <!-- 분석 -->
-
-    <section class="page" id="page4">
-
-        <div class="loading-title">
-            분석 중...
+    <section class="section" aria-labelledby="memories-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">OUR STORY</p>
+          <h2 id="memories-title">OUR MEMORIES</h2>
         </div>
+        <p class="section-note">앞으로 함께 채워갈 기록들</p>
+      </div>
 
-
-        <div class="loading-bar">
-
-            <div
-                class="loading-progress"
-                id="loadingProgress"
-            ></div>
-
-        </div>
-
-
-        <div
-            class="loading-number"
-            id="loadingNumber"
-        >
-            0%
-        </div>
-
+      <div class="timeline">
+        <article class="card memory">
+          <div class="memory-date">2026.09.23</div>
+          <div><h3>우리의 시작</h3><p>윤성과 지후가 함께 걷기 시작한 날.</p></div>
+        </article>
+        <article class="card memory">
+          <div class="memory-date">NEXT</div>
+          <div><h3>다음 페이지</h3><p>함께 만든 새로운 추억을 이곳에 하나씩 더해가요.</p></div>
+        </article>
+      </div>
     </section>
 
+    <footer class="footer">Designed by Younseong<br>for Jihoo, with love.</footer>
+  </main>
 
-
-    <!-- 결과 -->
-
-    <section class="page" id="page5">
-
-        <div class="couple">
-
-            곽윤성
-
-            <span class="heart">
-                ♥
-            </span>
-
-            이지후
-
+  <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="modal">
+      <div id="signedOutView">
+        <div class="modal-header">
+          <div><h2 id="authTitle">우리만의 로그인</h2><p class="modal-copy">로그인하지 않아도 글은 볼 수 있어요.<br>로그인하면 내 한마디만 수정할 수 있어요.</p></div>
+          <button class="close-button" id="closeModal" type="button" aria-label="닫기">×</button>
         </div>
+        <form id="loginForm">
+          <label class="field"><span>이메일</span><input id="email" type="email" autocomplete="email" inputmode="email" required></label>
+          <label class="field"><span>비밀번호</span><input id="password" type="password" autocomplete="current-password" required></label>
+          <button class="primary-button login-submit" id="loginSubmit" type="submit">로그인</button>
+          <p class="form-status" id="loginStatus" aria-live="polite"></p>
+        </form>
+      </div>
 
+      <div class="signed-in" id="signedInView">
+        <button class="close-button" id="closeSignedIn" type="button" aria-label="닫기" style="float:right">×</button>
+        <div class="avatar">♥</div>
+        <h3 id="signedInName">로그인 중</h3>
+        <p id="signedInEmail"></p>
+        <button class="primary-button" id="logoutButton" type="button">로그아웃</button>
+      </div>
+    </div>
+  </div>
 
-        <div class="info">
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-            <div class="label">
-                TOGETHER
-            </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      "use strict";
 
-            <div
-                class="value"
-                id="days"
-            >
-                -
-            </div>
+      const SUPABASE_URL = "https://snazdbhltowqxwcmhsej.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_12p7_c3J0-k8IbewVrTQRg_VoVn3wkp";
+      const COUPLE_START = { year: 2026, month: 9, day: 23 };
+      const PEOPLE = {
+        younseong: { uid: "ba25b89b-dcc1-47d6-ba21-1c121f2d23db", name: "윤성" },
+        jihoo: { uid: "a0841ad0-435e-4d48-a667-735ea33a5a17", name: "지후" }
+      };
+      const DEFAULT_MESSAGES = {
+        younseong: "윤성의 한마디를 기다리고 있어요.",
+        jihoo: "지후의 한마디를 기다리고 있어요."
+      };
 
-        </div>
+      const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      let currentUser = null;
+      let currentPerson = null;
+      let toastTimer = null;
 
+      const byId = id => document.getElementById(id);
+      const localDate = (year, month, day) => new Date(year, month - 1, day, 12);
+      const dateNumber = date => Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+      const addDays = (date, amount) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount, 12);
+      const dayDiff = (from, to) => Math.round((dateNumber(to) - dateNumber(from)) / 86400000);
+      const formatDate = date => new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "long", day: "numeric", weekday: "short" }).format(date);
 
-        <div class="info">
+      function calculateDates() {
+        const start = localDate(COUPLE_START.year, COUPLE_START.month, COUPLE_START.day);
+        const now = new Date();
+        const today = localDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        const together = dayDiff(start, today) + 1;
+        byId("togetherDays").textContent = Math.max(1, together).toLocaleString("ko-KR");
 
-            <div class="label">
-                STATUS
-            </div>
-
-            <div class="value">
-                연애 중 ♥
-            </div>
-
-        </div>
-
-
-        <div class="info">
-
-            <div class="label">
-                SINCE
-            </div>
-
-            <div class="value">
-                2026.09.23
-            </div>
-
-        </div>
-
-
-        <div class="footer">
-
-            Designed by Younseong<br>
-            for Jihoo.
-
-        </div>
-
-    </section>
-
-</div>
-
-
-
-<script>
-
-    /* 페이지 전환 */
-
-    function nextPage(number) {
-
-        document
-            .querySelectorAll(".page")
-            .forEach(page => {
-
-                page.classList.remove("active");
-
-            });
-
-
-        document
-            .getElementById(
-                "page" + number
-            )
-            .classList.add("active");
-    }
-
-
-
-    /* 호감도 슬라이더 */
-
-    const loveRange =
-        document.getElementById("loveRange");
-
-
-    const percentage =
-        document.getElementById("percentage");
-
-
-    loveRange.addEventListener(
-        "input",
-        () => {
-
-            percentage.textContent =
-                loveRange.value + "%";
-
+        const candidates = [];
+        const nextHundred = Math.max(100, Math.ceil(together / 100) * 100);
+        for (let count = nextHundred; count <= nextHundred + 200; count += 100) {
+          candidates.push({ name: `${count} DAYS`, date: addDays(start, count - 1) });
         }
-    );
-
-
-
-    /* 분석 */
-
-    function startAnalysis() {
-
-        nextPage(4);
-
-
-        const progress =
-            document.getElementById(
-                "loadingProgress"
-            );
-
-
-        const number =
-            document.getElementById(
-                "loadingNumber"
-            );
-
-
-        let value = 0;
-
-
-        const interval =
-            setInterval(() => {
-
-                value +=
-                    Math.floor(
-                        Math.random() * 5
-                    ) + 1;
-
-
-                if (value >= 100) {
-
-                    value = 100;
-
-                    clearInterval(interval);
-
-
-                    setTimeout(
-                        showResult,
-                        600
-                    );
-                }
-
-
-                progress.style.width =
-                    value + "%";
-
-
-                number.textContent =
-                    value + "%";
-
-            }, 90);
-    }
-
-
-
-    /* 연애 일수 자동 계산
-       2026.09.23 = 1일째
-    */
-
-    function calculateDays() {
-
-        const startDate =
-            new Date(
-                2026,
-                8,
-                23
-            );
-
-
-        const today =
-            new Date();
-
-
-        startDate.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        today.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        const difference =
-            today - startDate;
-
-
-        return (
-            Math.floor(
-                difference /
-                (1000 * 60 * 60 * 24)
-            ) + 1
-        );
-    }
-
-
-
-    /* 결과 */
-
-    function showResult() {
-
-        const days =
-            calculateDays();
-
-
-        document
-            .getElementById("days")
-            .textContent =
-                days + " DAYS";
-
-
-        nextPage(5);
-
-
-        createHearts();
-    }
-
-
-
-    /* 하트 효과 */
-
-    function createHearts() {
-
-        for (
-            let i = 0;
-            i < 12;
-            i++
-        ) {
-
-            setTimeout(() => {
-
-                const heart =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                heart.className =
-                    "tiny-heart";
-
-
-                heart.textContent =
-                    "♥";
-
-
-                heart.style.left =
-                    Math.random() *
-                    100 + "vw";
-
-
-                heart.style.top =
-                    (
-                        60 +
-                        Math.random() * 30
-                    ) + "vh";
-
-
-                heart.style.fontSize =
-                    (
-                        12 +
-                        Math.random() * 15
-                    ) + "px";
-
-
-                document
-                    .body
-                    .appendChild(
-                        heart
-                    );
-
-
-                setTimeout(
-                    () => heart.remove(),
-                    2500
-                );
-
-
-            }, i * 120);
+        for (let year = Math.max(1, today.getFullYear() - start.getFullYear()); year <= today.getFullYear() - start.getFullYear() + 3; year++) {
+          candidates.push({ name: `${year}주년`, date: localDate(start.getFullYear() + year, COUPLE_START.month, COUPLE_START.day) });
         }
-    }
 
-</script>
+        const next = candidates
+          .filter(item => dayDiff(today, item.date) >= 0)
+          .sort((a, b) => a.date - b.date)[0];
+        const remaining = dayDiff(today, next.date);
+        byId("anniversaryName").textContent = next.name;
+        byId("anniversaryDate").textContent = formatDate(next.date);
+        byId("anniversaryDday").textContent = remaining === 0 ? "D-DAY" : `D-${remaining}`;
+      }
 
+      function showToast(message) {
+        const toast = byId("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+      }
+
+      function getPersonFromUser(user) {
+        if (!user) return null;
+        return Object.keys(PEOPLE).find(key => PEOPLE[key].uid === user.id) || null;
+      }
+
+      function friendlyAuthError(error) {
+        const message = (error && error.message || "").toLowerCase();
+        if (message.includes("invalid login credentials")) return "이메일 또는 비밀번호가 맞지 않아요.";
+        if (message.includes("email not confirmed")) return "이메일 인증을 먼저 완료해 주세요.";
+        if (message.includes("rate limit")) return "로그인 시도가 너무 많아요. 잠시 뒤 다시 해주세요.";
+        return "로그인하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+      }
+
+      function openModal() {
+        byId("authModal").classList.add("open");
+        document.body.style.overflow = "hidden";
+        if (!currentUser) setTimeout(() => byId("email").focus(), 80);
+      }
+
+      function closeModal() {
+        byId("authModal").classList.remove("open");
+        document.body.style.overflow = "";
+        byId("loginStatus").textContent = "";
+      }
+
+      function renderSession(user) {
+        currentUser = user;
+        currentPerson = getPersonFromUser(user);
+        const signedIn = Boolean(user);
+        byId("signedOutView").style.display = signedIn ? "none" : "block";
+        byId("signedInView").style.display = signedIn ? "block" : "none";
+
+        document.querySelectorAll("[data-edit]").forEach(button => {
+          button.hidden = button.dataset.edit !== currentPerson;
+        });
+
+        if (!signedIn) {
+          byId("accountButton").textContent = "로그인";
+          byId("sessionNote").textContent = "로그인하면 내 한마디를 바꿀 수 있어요.";
+          return;
+        }
+
+        if (currentPerson) {
+          const name = PEOPLE[currentPerson].name;
+          byId("accountButton").textContent = `${name} · 로그인됨`;
+          byId("sessionNote").textContent = `${name}의 한마디를 수정할 수 있어요.`;
+          byId("signedInName").textContent = `${name}으로 로그인됨`;
+        } else {
+          byId("accountButton").textContent = "로그인됨";
+          byId("sessionNote").textContent = "등록된 두 사람의 계정만 수정할 수 있어요.";
+          byId("signedInName").textContent = "등록되지 않은 계정";
+        }
+        byId("signedInEmail").textContent = user.email || "";
+      }
+
+      async function loadMessages({ quiet = false } = {}) {
+        if (!quiet) byId("messageStatus").textContent = "오늘의 한마디를 불러오는 중...";
+        const { data, error } = await db
+          .from("couple_messages")
+          .select("author, message")
+          .in("author", ["younseong", "jihoo"]);
+
+        if (error) {
+          Object.keys(PEOPLE).forEach(key => {
+            const element = byId(`message-${key}`);
+            element.textContent = DEFAULT_MESSAGES[key];
+            element.classList.remove("loading");
+          });
+          byId("messageStatus").textContent = "메시지를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.";
+          console.error("couple_messages read failed:", error);
+          return;
+        }
+
+        const rows = new Map((data || []).map(row => [row.author, row.message]));
+        Object.keys(PEOPLE).forEach(key => {
+          const element = byId(`message-${key}`);
+          element.textContent = rows.get(key) || DEFAULT_MESSAGES[key];
+          element.classList.remove("loading");
+        });
+        byId("messageStatus").textContent = "";
+      }
+
+      function startEditing(person) {
+        if (person !== currentPerson) return;
+        const card = byId(`card-${person}`);
+        byId(`input-${person}`).value = byId(`message-${person}`).textContent;
+        card.classList.add("editing");
+        setTimeout(() => byId(`input-${person}`).focus(), 20);
+      }
+
+      function stopEditing(person) {
+        byId(`card-${person}`).classList.remove("editing");
+      }
+
+      async function saveMessage(person) {
+        if (!currentUser || person !== currentPerson) {
+          showToast("내 한마디만 수정할 수 있어요.");
+          return;
+        }
+        const input = byId(`input-${person}`);
+        const message = input.value.trim();
+        if (!message) {
+          showToast("한마디를 입력해 주세요.");
+          input.focus();
+          return;
+        }
+
+        const saveButton = document.querySelector(`[data-save="${person}"]`);
+        saveButton.disabled = true;
+        saveButton.textContent = "저장 중...";
+        const { data, error } = await db
+            .from("couple_messages")
+            .update({
+              message,
+              updated_at: new Date().toISOString()
+            })
+            .eq("author", person)
+            .eq("user_id", currentUser.id)
+            .select("author, message")
+            .maybeSingle();
+        saveButton.disabled = false;
+        saveButton.textContent = "저장";
+
+        if (error) {
+          console.error("couple_messages update failed:", error);
+          showToast("저장하지 못했어요. 다시 시도해 주세요.");
+          return;
+        }
+        if (!data) {
+          showToast("수정 권한을 확인해 주세요.");
+          return;
+        }
+        byId(`message-${person}`).textContent = data.message;
+        stopEditing(person);
+        showToast("오늘의 한마디를 저장했어요.");
+      }
+
+      async function signIn(event) {
+        event.preventDefault();
+        const submit = byId("loginSubmit");
+        const status = byId("loginStatus");
+        submit.disabled = true;
+        submit.textContent = "로그인 중...";
+        status.className = "form-status";
+        status.textContent = "";
+
+        const { error } = await db.auth.signInWithPassword({
+          email: byId("email").value.trim(),
+          password: byId("password").value
+        });
+        submit.disabled = false;
+        submit.textContent = "로그인";
+
+        if (error) {
+          status.className = "form-status error";
+          status.textContent = friendlyAuthError(error);
+          return;
+        }
+        byId("password").value = "";
+        closeModal();
+        showToast("로그인했어요.");
+      }
+
+      async function signOut() {
+        const button = byId("logoutButton");
+        button.disabled = true;
+        const { error } = await db.auth.signOut();
+        button.disabled = false;
+        if (error) {
+          showToast("로그아웃하지 못했어요.");
+          return;
+        }
+        closeModal();
+        showToast("로그아웃했어요.");
+      }
+
+      function bindEvents() {
+        byId("accountButton").addEventListener("click", openModal);
+        byId("closeModal").addEventListener("click", closeModal);
+        byId("closeSignedIn").addEventListener("click", closeModal);
+        byId("authModal").addEventListener("click", event => {
+          if (event.target === byId("authModal")) closeModal();
+        });
+        document.addEventListener("keydown", event => {
+          if (event.key === "Escape") closeModal();
+        });
+        byId("loginForm").addEventListener("submit", signIn);
+        byId("logoutButton").addEventListener("click", signOut);
+
+        document.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => startEditing(button.dataset.edit)));
+        document.querySelectorAll("[data-cancel]").forEach(button => button.addEventListener("click", () => stopEditing(button.dataset.cancel)));
+        document.querySelectorAll("[data-save]").forEach(button => button.addEventListener("click", () => saveMessage(button.dataset.save)));
+        document.querySelectorAll(".message-input").forEach(input => input.addEventListener("keydown", event => {
+          if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+            event.preventDefault();
+            saveMessage(input.id.replace("input-", ""));
+          }
+        }));
+        document.addEventListener("visibilitychange", () => {
+          if (!document.hidden) loadMessages({ quiet: true });
+        });
+      }
+
+      async function initialize() {
+        calculateDates();
+        bindEvents();
+        await loadMessages();
+        const { data: { session } } = await db.auth.getSession();
+        renderSession(session && session.user);
+        db.auth.onAuthStateChange((_event, sessionState) => renderSession(sessionState && sessionState.user));
+
+        db.channel("couple-messages-live")
+          .on("postgres_changes", { event: "UPDATE", schema: "public", table: "couple_messages" }, () => loadMessages({ quiet: true }))
+          .subscribe();
+      }
+
+      initialize().catch(error => {
+        console.error("initialization failed:", error);
+        byId("messageStatus").textContent = "페이지 연결 중 문제가 생겼어요. 새로고침해 주세요.";
+      });
+    })();
+  </script>
 </body>
 </html>
