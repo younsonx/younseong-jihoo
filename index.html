@@ -599,6 +599,19 @@
     }
     .field input:focus { border-color: rgba(0, 113, 227, .4); box-shadow: 0 0 0 4px rgba(0, 113, 227, .08); }
     .login-submit { width: 100%; margin-top: 18px; min-height: 50px; }
+    .auth-text-button {
+      display: block;
+      margin: 14px auto 0;
+      border: 0;
+      padding: 5px 8px;
+      background: transparent;
+      color: #0066cc;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .auth-text-button:disabled { color: #a1a1a6; cursor: default; }
+    .recovery-view { display: none; }
     .form-status { min-height: 20px; margin: 12px 2px 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
     .form-status.error { color: #d70015; }
     .signed-in { display: none; text-align: center; }
@@ -806,7 +819,24 @@
           <label class="field"><span>이메일</span><input id="email" type="email" autocomplete="email" inputmode="email" required></label>
           <label class="field"><span>비밀번호</span><input id="password" type="password" autocomplete="current-password" required></label>
           <button class="primary-button login-submit" id="loginSubmit" type="submit">로그인</button>
+          <button class="auth-text-button" id="sendRecoveryButton" type="button">비밀번호를 잊으셨나요?</button>
           <p class="form-status" id="loginStatus" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="recovery-view" id="recoveryView">
+        <div class="modal-header">
+          <div>
+            <h2>새 비밀번호 설정</h2>
+            <p class="modal-copy">윤성·지후 계정에 사용할 새 비밀번호를 입력해 주세요.</p>
+          </div>
+          <button class="close-button" id="closeRecovery" type="button" aria-label="닫기">×</button>
+        </div>
+        <form id="recoveryForm">
+          <label class="field"><span>새 비밀번호</span><input id="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+          <label class="field"><span>새 비밀번호 확인</span><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+          <button class="primary-button login-submit" id="recoverySubmit" type="submit">비밀번호 변경</button>
+          <p class="form-status" id="recoveryStatus" aria-live="polite"></p>
         </form>
       </div>
 
@@ -875,6 +905,7 @@
       const PHOTO_PATH = "main-photo";
       const GALLERY_FOLDER = "gallery";
       const MAX_PHOTO_SIZE = 15 * 1024 * 1024;
+      const PASSWORD_REDIRECT_URL = "https://younsonx.github.io/younseong-jihoo/?reset=password";
       const PEOPLE = {
         younseong: { uid: "ba25b89b-dcc1-47d6-ba21-1c121f2d23db", name: "윤성" },
         jihoo: { uid: "a0841ad0-435e-4d48-a667-735ea33a5a17", name: "지후" }
@@ -891,6 +922,7 @@
       let galleryItems = [];
       let toastTimer = null;
       let localPhotoUrl = null;
+      let recoveryMode = false;
 
       const byId = id => document.getElementById(id);
       const localDate = (year, month, day) => new Date(year, month - 1, day, 12);
@@ -945,6 +977,14 @@
         return "로그인하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
       }
 
+      function friendlyRecoveryError(error) {
+        const message = (error && error.message || "").toLowerCase();
+        if (message.includes("rate limit")) return "메일 요청이 너무 많아요. 잠시 뒤 다시 시도해 주세요.";
+        if (message.includes("same password")) return "기존 비밀번호와 다른 비밀번호를 입력해 주세요.";
+        if (message.includes("password")) return "비밀번호는 8자 이상으로 입력해 주세요.";
+        return "처리하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+      }
+
       function openModal() {
         byId("authModal").classList.add("open");
         updateBodyLock();
@@ -955,6 +995,19 @@
         byId("authModal").classList.remove("open");
         updateBodyLock();
         byId("loginStatus").textContent = "";
+        byId("recoveryStatus").textContent = "";
+      }
+
+      function showRecoveryView(user) {
+        recoveryMode = true;
+        currentUser = user || currentUser;
+        currentPerson = getPersonFromUser(currentUser);
+        byId("signedOutView").style.display = "none";
+        byId("signedInView").style.display = "none";
+        byId("recoveryView").style.display = "block";
+        byId("authModal").classList.add("open");
+        updateBodyLock();
+        setTimeout(() => byId("newPassword").focus(), 80);
       }
 
       function openCompletedModal() {
@@ -985,11 +1038,16 @@
       }
 
       function renderSession(user) {
+        if (recoveryMode) {
+          showRecoveryView(user);
+          return;
+        }
         currentUser = user;
         currentPerson = getPersonFromUser(user);
         const signedIn = Boolean(user);
         byId("signedOutView").style.display = signedIn ? "none" : "block";
         byId("signedInView").style.display = signedIn ? "block" : "none";
+        byId("recoveryView").style.display = "none";
 
         document.querySelectorAll("[data-edit]").forEach(button => {
           button.hidden = button.dataset.edit !== currentPerson;
@@ -1455,6 +1513,78 @@
         showToast("로그인했어요.");
       }
 
+      async function sendPasswordRecovery() {
+        const email = byId("email").value.trim();
+        const button = byId("sendRecoveryButton");
+        const status = byId("loginStatus");
+        status.className = "form-status";
+
+        if (!email) {
+          status.className = "form-status error";
+          status.textContent = "먼저 계정 이메일을 입력해 주세요.";
+          byId("email").focus();
+          return;
+        }
+
+        button.disabled = true;
+        button.textContent = "재설정 메일 보내는 중...";
+        status.textContent = "";
+        const { error } = await db.auth.resetPasswordForEmail(email, {
+          redirectTo: PASSWORD_REDIRECT_URL
+        });
+        button.disabled = false;
+        button.textContent = "비밀번호를 잊으셨나요?";
+
+        if (error) {
+          status.className = "form-status error";
+          status.textContent = friendlyRecoveryError(error);
+          return;
+        }
+
+        status.textContent = "재설정 메일을 보냈어요. 메일 속 링크를 눌러 새 비밀번호를 설정해 주세요.";
+      }
+
+      async function updateRecoveredPassword(event) {
+        event.preventDefault();
+        const password = byId("newPassword").value;
+        const confirmation = byId("confirmPassword").value;
+        const submit = byId("recoverySubmit");
+        const status = byId("recoveryStatus");
+        status.className = "form-status";
+        status.textContent = "";
+
+        if (password.length < 8) {
+          status.className = "form-status error";
+          status.textContent = "비밀번호는 8자 이상으로 입력해 주세요.";
+          return;
+        }
+        if (password !== confirmation) {
+          status.className = "form-status error";
+          status.textContent = "두 비밀번호가 서로 달라요.";
+          return;
+        }
+
+        submit.disabled = true;
+        submit.textContent = "변경 중...";
+        const { data, error } = await db.auth.updateUser({ password });
+        submit.disabled = false;
+        submit.textContent = "비밀번호 변경";
+
+        if (error) {
+          status.className = "form-status error";
+          status.textContent = friendlyRecoveryError(error);
+          return;
+        }
+
+        recoveryMode = false;
+        byId("newPassword").value = "";
+        byId("confirmPassword").value = "";
+        window.history.replaceState({}, document.title, window.location.pathname);
+        renderSession(data.user || currentUser);
+        closeModal();
+        showToast("새 비밀번호로 변경했어요.");
+      }
+
       async function signOut() {
         const button = byId("logoutButton");
         button.disabled = true;
@@ -1471,6 +1601,7 @@
       function bindEvents() {
         byId("accountButton").addEventListener("click", openModal);
         byId("closeModal").addEventListener("click", closeModal);
+        byId("closeRecovery").addEventListener("click", closeModal);
         byId("closeSignedIn").addEventListener("click", closeModal);
         byId("authModal").addEventListener("click", event => {
           if (event.target === byId("authModal")) closeModal();
@@ -1493,6 +1624,8 @@
           }
         });
         byId("loginForm").addEventListener("submit", signIn);
+        byId("sendRecoveryButton").addEventListener("click", sendPasswordRecovery);
+        byId("recoveryForm").addEventListener("submit", updateRecoveredPassword);
         byId("logoutButton").addEventListener("click", signOut);
         byId("bucketForm").addEventListener("submit", addBucketItem);
         byId("photoButton").addEventListener("click", () => byId("photoInput").click());
@@ -1524,9 +1657,17 @@
         bindEvents();
         loadPhoto();
         await Promise.all([loadMessages(), loadBucketList()]);
+        db.auth.onAuthStateChange((event, sessionState) => {
+          if (event === "PASSWORD_RECOVERY") {
+            showRecoveryView(sessionState && sessionState.user);
+            return;
+          }
+          renderSession(sessionState && sessionState.user);
+        });
         const { data: { session } } = await db.auth.getSession();
-        renderSession(session && session.user);
-        db.auth.onAuthStateChange((_event, sessionState) => renderSession(sessionState && sessionState.user));
+        const returningFromRecovery = new URLSearchParams(window.location.search).get("reset") === "password";
+        if (returningFromRecovery && session && session.user) showRecoveryView(session.user);
+        else renderSession(session && session.user);
 
         db.channel("couple-messages-live")
           .on("postgres_changes", { event: "UPDATE", schema: "public", table: "couple_messages" }, () => loadMessages({ quiet: true }))
